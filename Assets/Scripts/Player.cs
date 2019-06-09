@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+ * Author: Emanuel Misztal
+ * 2019
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -14,25 +19,28 @@ public class Player : MonoBehaviour
 
     private int terceScreenWidth; // store terce of screen width
     private int terceScreenHeight; // store terce of screen width
+    private float originalSpeed;
 
     // Start is called before the first frame update
     void Start()
     {
         // get player hp from playerpref, if entry does not exist set default
-        if (PlayerPrefs.HasKey("playerHP")) playerHP = PlayerPrefs.GetInt("playerHP");
+        if (PlayerPrefs.HasKey("playerHP")) playerHP = PlayerPrefs.GetInt("playerHP"); // read saved player hp
         else
         {
-            PlayerPrefs.SetInt("playerHP", playerHP);
+            PlayerPrefs.SetInt("playerHP", playerHP); // write player hp
         }
 
         // if playerpref has no entry for player experiance points create it with default value
-        if (!PlayerPrefs.HasKey("playerEXP")) PlayerPrefs.SetInt("playerEXP", 0);
+        if (!PlayerPrefs.HasKey("playerEXP")) PlayerPrefs.SetInt("playerEXP", 0); // write player experiance points if it isn't writen
 
-        terceScreenWidth = Screen.width / 3;
-        terceScreenHeight = Screen.height / 3;
+        terceScreenWidth = Screen.width / 3; // get 1/3 of screen width
+        terceScreenHeight = Screen.height / 3; // get 1/3 of screen height
 
-        // player position
-        if (PlayerPrefs.HasKey("exitPositionX")) transform.position = new Vector3(PlayerPrefs.GetFloat("exitPositionX"), PlayerPrefs.GetFloat("exitPositionY"), 0f);
+        // check if player position is saved
+        if (PlayerPrefs.HasKey("exitPositionX")) transform.position = new Vector3(PlayerPrefs.GetFloat("exitPositionX"), PlayerPrefs.GetFloat("exitPositionY"), 0f); // move player to saved position
+
+        originalSpeed = speed; // get original speed
     }
 
     public int GetPlayerHP() { return playerHP; } // return player hp
@@ -100,39 +108,41 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("item")) // collided with item
         {
-            equipment.AddItem(other.gameObject.GetComponent<Item>().ItemToStruct());
-            Destroy(other.gameObject);
+            equipment.AddItem(other.gameObject.GetComponent<Item>().ItemToStruct()); // add item to equipment
+            Destroy(other.gameObject); // destroy item
         }
 
         if (other.gameObject.CompareTag("building")) // collided with building door
         {
-            transform.position = new Vector3(other.gameObject.GetComponent<Building>().exitPositionX, other.gameObject.GetComponent<Building>().exitPositionY, 0f);
+            transform.position = new Vector3(other.gameObject.GetComponent<Building>().exitPositionX, other.gameObject.GetComponent<Building>().exitPositionY, 0f); // move to destination set by door
         }
 
         if (other.gameObject.CompareTag("enemy")) // collided with npc
         {
-            speed = 0f;
-            PlayerPrefs.SetInt("npcHP", other.gameObject.GetComponent<NPC>().npcHP);
-            PlayerPrefs.SetInt("expGain", other.gameObject.GetComponent<NPC>().expGain);
-            PlayerPrefs.SetFloat("exitPositionX", other.gameObject.GetComponent<NPC>().exitPositionX);
-            PlayerPrefs.SetFloat("exitPositionY", other.gameObject.GetComponent<NPC>().exitPositionY);
-            battleButton.gameObject.SetActive(true);
-            fleeButton.gameObject.SetActive(true);
+            speed = 0f; // stop player
+            PlayerPrefs.SetInt("npcHP", other.gameObject.GetComponent<NPC>().npcHP); // write npc health
+            PlayerPrefs.SetInt("expGain", other.gameObject.GetComponent<NPC>().expGain); // write experiance points gain
+            PlayerPrefs.SetFloat("exitPositionX", other.gameObject.GetComponent<NPC>().exitPositionX); // write on battle end position x
+            PlayerPrefs.SetFloat("exitPositionY", other.gameObject.GetComponent<NPC>().exitPositionY); // write on battle end position y
+            battleButton.gameObject.SetActive(true); // activate battle button
+            fleeButton.gameObject.SetActive(true); // activate flee button
         }
     }
 
+    // when battle button is clicked
     public void OnBattleButtonClick()
     {
-        PlayerPrefs.SetInt("playerHP", playerHP);
-        PlayerPrefs.SetString("lastScene", SceneManager.GetActiveScene().name);
-        SceneManager.LoadScene("BattleScene");
+        PlayerPrefs.SetInt("playerHP", playerHP); // write player hp
+        PlayerPrefs.SetString("lastScene", SceneManager.GetActiveScene().name); // write current scene name
+        SceneManager.LoadScene("BattleScene"); // load battle scene
     }
 
+    // when flee button is clicked
     public void OnFleeButtonClick()
     {
-        battleButton.gameObject.SetActive(false);
-        fleeButton.gameObject.SetActive(false);
-        speed = 0.025f;
+        battleButton.gameObject.SetActive(false); // deactivate battle button
+        fleeButton.gameObject.SetActive(false); // deactivate flee button
+        speed = originalSpeed; // return player speed to original value
     }
 }
 

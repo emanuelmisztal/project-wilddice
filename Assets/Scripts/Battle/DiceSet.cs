@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+ * Author: Emanuel Misztal
+ * 2019
+ */
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,46 +11,45 @@ public class DiceSet : MonoBehaviour
 {
     public Dice[] diceSet; // set containg all 5 dices
 
-    private int difficulty;
-    private short outcome;
+    private int difficulty; // difficulity level
+    private short outcome; // dice set outcome
 
     private void Start()
     {
-        if (!PlayerPrefs.HasKey("difficulty")) PlayerPrefs.SetInt("difficulty", 0);
-        difficulty = PlayerPrefs.GetInt("difficulty");
+        if (!PlayerPrefs.HasKey("difficulty")) PlayerPrefs.SetInt("difficulty", 0); // set difficulity if none was set previously
+        difficulty = PlayerPrefs.GetInt("difficulty"); // get difficulity level
     }
 
     // Rolling whole set
     public void RollSet()
     {
-        foreach (Dice dice in diceSet) dice.RollDice();
-        outcome = CalculateOutcome();
+        // for every dice in dice set
+        foreach (Dice dice in diceSet) dice.RollDice(); // roll dice
+        outcome = CalculateOutcome(); // calculate dice set outcome
     }
 
     // Reroll selected dices
     public void RerollSet()
     {
-        foreach (Dice dice in diceSet) if (dice.GetIsSelected()) dice.RollDice();
-        outcome = CalculateOutcome();
+        // for every selected dice in dice set
+        foreach (Dice dice in diceSet) if (dice.GetIsSelected()) dice.RollDice(); // roll dice
+        outcome = CalculateOutcome(); // calculate new outcome
     }
 
-    public short GetOutcome() { return outcome; }
+    // outcome interface
+    public short GetOutcome() { return outcome; } // returns dice set outcome
 
     // Invoke this method when outcome is to be calculated
     public short CalculateOutcome()
     {
-        // Table to store final sides
-        short[] dices = new short[5];
+        short[] dices = new short[5]; // Table to store final sides
 
-        // Create copy of sides
-        for (int i = 0; i < 5; i++) dices[i] = (short)diceSet[i].GetFinalSide();
+        for (int i = 0; i < 5; i++) dices[i] = (short)diceSet[i].GetFinalSide(); // Create copy of sides
 
-        // Sort table
-        System.Array.Sort(dices);
+        System.Array.Sort(dices); // Sort table
 
         // Count how many different sides are present
         short difCount = 0;
-
         for (int i = 1; i < 7; i++)
         {
             for (int j = 0; j < 5; j++)
@@ -94,15 +98,21 @@ public class DiceSet : MonoBehaviour
         }
     }
 
+    // now it's time for enemy to reroll dices
     public void AIreroll(short playerOutcome)
     {
-        System.Array.Sort(diceSet);
+        System.Array.Sort(diceSet); // sort dice set
+
+        // what to do next depends on difficulity level
         switch (difficulty)
         {
+            // easy mode
             case 0:
+                // check if player outcome is higher than enemy outcome
                 if (playerOutcome > outcome)
                 {
-                    switch (outcome)
+                    // what to reroll depends on what is in the set
+                    switch (outcome) // switch on outcome code
                     {
                         case 0:
                             diceSet[0].RollDice();
