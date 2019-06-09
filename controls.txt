@@ -1,0 +1,74 @@
+// Update is called once per frame
+    void Update()
+    {
+        // Here we will check wich area of players movement input was tapped, touch map looks like this:
+        /* * * * * * *
+         * 8 | 1 | 2 *
+         * - o - o - *
+         * 7 | P | 3 *
+         * - o - o - *
+         * 6 | 5 | 4 *
+         * * * * * * */
+        if (Input.touchCount > 0) // if touch appears
+        {
+            Touch touch = Input.GetTouch(0); // bind first touch to object
+
+            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
+            {
+                // check wich area was touched
+                if (touch.position.x < terceScreenWidth) // 6, 7, 8
+                {
+                    if (touch.position.y < terceScreenHeight) // 6
+                    {
+                        transform.position = new Vector3(transform.position.x - 0.05f, transform.position.y - 0.05f, 0.0f); // move left-down
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, 135.0f); // rotate to left-down
+                    }
+                    else if (touch.position.y > terceScreenHeight * 2) // 8
+                    {
+                        transform.position = new Vector3(transform.position.x - 0.05f, transform.position.y + 0.05f, 0.0f); // move left-up
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, 45.0f);// rotate left-up
+                    }
+                    else // 7
+                    {
+                        transform.position = new Vector3(transform.position.x - 0.05f, transform.position.y, 0.0f); // move left
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, 90.0f); // rotate left
+                    }
+                }
+                else if (touch.position.x > terceScreenWidth * 2) // 2, 3, 4
+                {
+                    if (touch.position.y < terceScreenHeight) // 4
+                    {
+                        transform.position = new Vector3(transform.position.x + 0.05f, transform.position.y - 0.05f, 0.0f); // move right-down
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, -135.0f); // rotate right-down
+                    }
+                    else if (touch.position.y > terceScreenHeight * 2) // 2
+                    {
+                        transform.position = new Vector3(transform.position.x + 0.05f, transform.position.y + 0.05f, 0.0f); // move right-up
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, -45.0f); // rotate right-up
+                    }
+                    else // 3
+                    {
+                        transform.position = new Vector3(transform.position.x + 0.05f, transform.position.y, 0.0f); // move right
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, -90.0f); // rotate right
+                    }
+                }
+                else // 1, 5, P
+                {
+                    if (touch.position.y < terceScreenHeight) // 5
+                    {
+                        transform.position = new Vector3(transform.position.x, transform.position.y - 0.05f, 0.0f); // move down
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, 180.0f); // rotate down
+                    }
+                    else if (touch.position.y > terceScreenHeight * 2) // 1
+                    {
+                        transform.position = new Vector3(transform.position.x, transform.position.y + 0.05f, 0.0f); // move up
+                        transform.eulerAngles = new Vector3(0.0f, 0.0f, 0.0f); // rotate up
+                    }
+                    else // Player
+                    {
+                        // display menu
+                    }
+                }
+            }
+        }
+    }
