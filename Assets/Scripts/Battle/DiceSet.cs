@@ -101,6 +101,79 @@ public class DiceSet : MonoBehaviour
     // now it's time for enemy to reroll dices
     public void AIreroll(short playerOutcome)
     {
+        outcome = CalculateOutcome();
+        System.Array.Sort(diceSet); // sort dice set
+
+
+        // what to do next depends on difficulity level
+        switch (difficulty)
+        {
+            // easy mode
+            case 0:
+                // check if player outcome is higher than enemy outcome
+                if (playerOutcome >= outcome)
+                {
+                    // what to reroll depends on what is in the set
+                    switch (outcome) // switch on outcome code
+                    {
+                        case 0:
+                            diceSet[(int)UnityEngine.Random.Range(0f, 4.1f)].RollDice();
+                            break;
+
+                        case 100:
+                            break;
+
+                        case 70:
+                            if (diceSet[0].GetFinalSide() == diceSet[1].GetFinalSide()) diceSet[4].RollDice();
+                            else diceSet[0].RollDice();
+                            break;
+
+                        case 60:
+                            if (diceSet[1].GetFinalSide() == diceSet[2].GetFinalSide()) diceSet[3].RollDice();
+                            else diceSet[2].RollDice();
+                            break;
+
+                        case 50:
+                            break;
+
+                        case 40:
+                            if (diceSet[0].GetFinalSide() + 1 == diceSet[1].GetFinalSide()) diceSet[4].RollDice();
+                            else diceSet[0].RollDice();
+                            break;
+
+                        case 30:
+                            if (diceSet[2].GetFinalSide() != diceSet[3].GetFinalSide()) diceSet[3].RollDice();
+                            else if (diceSet[0].GetFinalSide() != diceSet[1].GetFinalSide()) diceSet[0].RollDice();
+                            else diceSet[1].RollDice();
+                            break;
+
+                        case 20:
+                            if (diceSet[3] != diceSet[4]) diceSet[4].RollDice();
+                            else if (diceSet[1] != diceSet[2]) diceSet[2].RollDice();
+                            else diceSet[0].RollDice();
+                            break;
+
+                        case 10:
+                            if (diceSet[0].GetFinalSide() == diceSet[1].GetFinalSide()) diceSet[2].RollDice();
+                            else diceSet[0].RollDice();
+                            break;
+                    }
+                }
+                break;
+
+            case 1:
+                break;
+
+            case 2:
+                break;
+        }
+    }
+}
+
+/*
+ // now it's time for enemy to reroll dices
+    public void AIreroll(short playerOutcome)
+    {
         System.Array.Sort(diceSet); // sort dice set
 
         // what to do next depends on difficulity level
@@ -166,4 +239,4 @@ public class DiceSet : MonoBehaviour
                 break;
         }
     }
-}
+ */

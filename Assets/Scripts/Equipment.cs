@@ -9,7 +9,7 @@ using UnityEngine;
 
 public class Equipment : MonoBehaviour
 {
-    public Dictionary<ItemStruct, int> items; // dictionary containg (item, quantity) pairs
+    private Dictionary<ItemStruct, int> items; // dictionary containg (item, quantity) pairs
 
     // Awake is called when the script instance is being loaded
     private void Awake()

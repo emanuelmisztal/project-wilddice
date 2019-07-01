@@ -30,6 +30,20 @@ public class Dice : MonoBehaviour, IComparable<Dice>
     // interface for final side of dice
     public int GetFinalSide() { return finalSide; } // Return final dice side number
 
+    // interface for is selected flag
+    public bool GetIsSelected() { return isSelected; } // returns isSelected status
+
+    // dices comparator
+    public bool Equals(Dice other) { return this.finalSide == other.finalSide ? true : false; } // compare final sides of dices
+
+    // dices comparator
+    public int CompareTo(Dice other)
+    {
+        if (this.finalSide < other.finalSide) return 1; // is bigger
+        else if (this.finalSide == other.finalSide) return 0; // equals
+        else return -1; // is smaller
+    }
+
     // Roll dice - calls RollTheDice coroutine so You dont have to remember its name
     public void RollDice()
     {
@@ -67,19 +81,5 @@ public class Dice : MonoBehaviour, IComparable<Dice>
 
             isSelected = !isSelected; // change is selected status to oposite
         }
-    }
-
-    // interface for is selected flag
-    public bool GetIsSelected() { return isSelected; } // returns isSelected status
-
-    // dices comparator
-    public bool Equals(Dice other) { return this.finalSide == other.finalSide ? true : false; } // compare final sides of dices
-
-    // dices comparator
-    public int CompareTo(Dice other)
-    {
-        if (this.finalSide < other.finalSide) return 1; // is bigger
-        else if (this.finalSide == other.finalSide) return 0; // equals
-        else return -1; // is smaller
     }
 }
